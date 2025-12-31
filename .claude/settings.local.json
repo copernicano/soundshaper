@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\\\Users\\\\praimondicom\\\\OneDrive - DXC Production\\\\Documents\\\\Symbolizer\")",
+      "Bash(node -e:*)",
+      "Bash(dir /b \"C:\\\\Users\\\\praimondicom\\\\OneDrive - DXC Production\\\\Documents\\\\Symbolizer\")",
+      "Bash(python -m http.server:*)"
+    ]
+  }
+}

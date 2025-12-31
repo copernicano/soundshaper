@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Soundshaper - Emotional Music Visualizer">
+
+    <title>Soundshaper</title>
+
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+
+    <!-- UI Overlay -->
+    <div id="ui-overlay">
+        <!-- Indicatore sorgente attiva -->
+        <div id="source-indicator"></div>
+
+        <!-- Nome brano -->
+        <div id="track-name"></div>
+
+        <!-- Debug overlay (rimosso in produzione) -->
+        <div id="debug-overlay"></div>
+
+        <!-- Indicatore emozione -->
+        <div id="emotion-indicator"></div>
+
+        <!-- Controlli -->
+        <div id="controls">
+            <button id="btn-file" class="control-btn" aria-label="Carica file audio">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 17v3a2 2 0 002 2h14a2 2 0 002-2v-3"/>
+                    <polyline points="16,6 12,2 8,6"/>
+                    <line x1="12" y1="2" x2="12" y2="16"/>
+                </svg>
+            </button>
+
+            <button id="btn-prev" class="control-btn hidden" aria-label="Traccia precedente">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <rect x="3" y="5" width="3" height="14"/>
+                    <polygon points="19,5 9,12 19,19"/>
+                </svg>
+            </button>
+
+            <button id="btn-play" class="control-btn hidden" aria-label="Play/Pausa">
+                <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,3 19,12 5,21"/>
+                </svg>
+                <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" class="hidden">
+                    <rect x="6" y="4" width="4" height="16"/>
+                    <rect x="14" y="4" width="4" height="16"/>
+                </svg>
+            </button>
+
+            <button id="btn-next" class="control-btn hidden" aria-label="Traccia successiva">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="5,5 15,12 5,19"/>
+                    <rect x="18" y="5" width="3" height="14"/>
+                </svg>
+            </button>
+
+            <button id="btn-mic" class="control-btn" aria-label="Attiva microfono">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+                    <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+                    <line x1="12" y1="19" x2="12" y2="23"/>
+                    <line x1="8" y1="23" x2="16" y2="23"/>
+                </svg>
+                <span id="mic-indicator" class="hidden"></span>
+            </button>
+
+            <button id="btn-settings" class="control-btn" aria-label="Impostazioni">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Settings Panel -->
+        <div id="settings-panel" class="hidden">
+            <div class="settings-header">
+                <span>Settings</span>
+                <button id="close-settings">✕</button>
+            </div>
+
+            <div class="setting-row">
+                <label>Size</label>
+                <input type="range" id="s-size" min="0.3" max="2" step="0.1" value="1">
+                <span class="val">1.0</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Glow</label>
+                <input type="range" id="s-glow" min="0" max="1.5" step="0.1" value="1">
+                <span class="val">1.0</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Spread</label>
+                <input type="range" id="s-spread" min="0.5" max="2" step="0.1" value="1">
+                <span class="val">1.0</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Particles</label>
+                <input type="range" id="s-particles" min="0.3" max="1.5" step="0.1" value="1">
+                <span class="val">1.0</span>
+            </div>
+
+            <div class="setting-row">
+                <label>Lines</label>
+                <input type="range" id="s-lines" min="0" max="1" step="0.1" value="1">
+                <span class="val">1.0</span>
+            </div>
+
+            <button id="reset-settings">Reset Defaults</button>
+        </div>
+    </div>
+
+    <!-- Input file nascosto (multiple per playlist) -->
+    <input type="file" id="file-input" accept="audio/*" multiple hidden>
+
+    <!-- Three.js da CDN -->
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+
+    <!-- Moduli app -->
+    <script src="emotions.js"></script>
+    <script src="transitions.js"></script>
+    <script src="audio-analyzer.js"></script>
+    <script src="visual-engine.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

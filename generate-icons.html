@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soundshaper - Generatore Icone</title>
+    <style>
+        body {
+            font-family: system-ui;
+            background: #1a1a1a;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        h1 { margin-bottom: 10px; }
+        p { color: #888; margin-bottom: 30px; }
+        .icons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .icon-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        canvas {
+            border: 1px solid #333;
+            border-radius: 24px;
+        }
+        button {
+            background: #4a9eff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #3a8eef;
+        }
+        .instructions {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: left;
+        }
+        .instructions h3 { margin-top: 0; }
+        .instructions ol { padding-left: 20px; }
+        .instructions li { margin-bottom: 8px; color: #ccc; }
+    </style>
+</head>
+<body>
+    <h1>Soundshaper Icon Generator</h1>
+    <p>Clicca i bottoni per scaricare le icone PNG per la PWA</p>
+
+    <div class="icons">
+        <div class="icon-box">
+            <canvas id="canvas192" width="192" height="192"></canvas>
+            <span>192x192</span>
+            <button onclick="downloadIcon(192)">Scarica icon-192.png</button>
+        </div>
+        <div class="icon-box">
+            <canvas id="canvas512" width="512" height="512"></canvas>
+            <span>512x512</span>
+            <button onclick="downloadIcon(512)">Scarica icon-512.png</button>
+        </div>
+    </div>
+
+    <div class="instructions">
+        <h3>Istruzioni</h3>
+        <ol>
+            <li>Clicca su "Scarica" per ogni icona</li>
+            <li>Salva i file nella cartella Symbolizer</li>
+            <li>Puoi eliminare questo file (generate-icons.html) dopo</li>
+        </ol>
+    </div>
+
+    <script>
+        function drawIcon(ctx, size) {
+            // Sfondo nero con gradiente sottile
+            const gradient = ctx.createRadialGradient(
+                size/2, size/2, 0,
+                size/2, size/2, size/2
+            );
+            gradient.addColorStop(0, '#1a1a2e');
+            gradient.addColorStop(1, '#000000');
+
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+
+            // "S" stilizzata come onda sonora
+            ctx.save();
+            ctx.translate(size/2, size/2);
+
+            // Colore principale
+            const mainGradient = ctx.createLinearGradient(-size/3, -size/3, size/3, size/3);
+            mainGradient.addColorStop(0, '#4a9eff');
+            mainGradient.addColorStop(0.5, '#a855f7');
+            mainGradient.addColorStop(1, '#ec4899');
+
+            ctx.strokeStyle = mainGradient;
+            ctx.lineWidth = size * 0.06;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Disegna S come curva fluida
+            ctx.beginPath();
+            const s = size * 0.25;
+
+            // Parte superiore della S
+            ctx.moveTo(-s * 0.8, -s);
+            ctx.bezierCurveTo(
+                s * 0.6, -s * 1.2,
+                s * 0.8, -s * 0.3,
+                0, 0
+            );
+
+            // Parte inferiore della S
+            ctx.bezierCurveTo(
+                -s * 0.8, s * 0.3,
+                -s * 0.6, s * 1.2,
+                s * 0.8, s
+            );
+
+            ctx.stroke();
+
+            // Particelle decorative
+            const particleColors = ['#4a9eff', '#a855f7', '#ec4899', '#22d3ee'];
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const radius = size * 0.35 + Math.sin(i * 0.7) * size * 0.05;
+                const x = Math.cos(angle) * radius;
+                const y = Math.sin(angle) * radius;
+                const particleSize = size * 0.015 + Math.random() * size * 0.01;
+
+                ctx.beginPath();
+                ctx.fillStyle = particleColors[i % particleColors.length];
+                ctx.globalAlpha = 0.6 + Math.random() * 0.4;
+                ctx.arc(x, y, particleSize, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.restore();
+        }
+
+        function downloadIcon(size) {
+            const canvas = document.getElementById('canvas' + size);
+            const link = document.createElement('a');
+            link.download = 'icon-' + size + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        // Genera icone all'avvio
+        drawIcon(document.getElementById('canvas192').getContext('2d'), 192);
+        drawIcon(document.getElementById('canvas512').getContext('2d'), 512);
+    </script>
+</body>
+</html>

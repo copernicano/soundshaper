@@ -1,0 +1,101 @@
+{
+    "id": "soundshaper-pwa",
+    "name": "Soundshaper",
+    "short_name": "Soundshaper",
+    "description": "Emotional Music Visualizer - Trasforma la musica in forme visive emozionali tramite un sistema di particelle reattivo",
+    "lang": "it",
+    "dir": "ltr",
+    "start_url": "./index.html",
+    "scope": "./",
+    "display": "fullscreen",
+    "display_override": ["fullscreen", "standalone", "minimal-ui"],
+    "orientation": "any",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "categories": ["entertainment", "music", "graphics"],
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshot-wide.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Soundshaper Desktop View"
+        },
+        {
+            "src": "screenshot-mobile.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Soundshaper Mobile View"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Apri File Audio",
+            "short_name": "File",
+            "description": "Carica un file audio da riprodurre",
+            "url": "./index.html?action=file",
+            "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+        },
+        {
+            "name": "Usa Microfono",
+            "short_name": "Mic",
+            "description": "Visualizza audio dal microfono",
+            "url": "./index.html?action=mic",
+            "icons": [{"src": "icon-192.png", "sizes": "192x192"}]
+        }
+    ],
+    "launch_handler": {
+        "client_mode": "navigate-existing"
+    },
+    "handle_links": "preferred",
+    "prefer_related_applications": false,
+    "related_applications": [],
+    "file_handlers": [
+        {
+            "action": "./index.html",
+            "accept": {
+                "audio/*": [".mp3", ".wav", ".ogg", ".flac", ".m4a", ".aac", ".webm"]
+            }
+        }
+    ],
+    "share_target": {
+        "action": "./index.html",
+        "method": "POST",
+        "enctype": "multipart/form-data",
+        "params": {
+            "files": [
+                {
+                    "name": "audio",
+                    "accept": ["audio/*"]
+                }
+            ]
+        }
+    }
+}
